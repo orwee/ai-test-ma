@@ -9,10 +9,10 @@ WEBHOOK_URL = "https://n8n-n8n.sc74op.easypanel.host/webhook-test/90b491f3-14ef-
 # --- CONFIGURACIÓN DE LA PÁGINA ---
 st.set_page_config(
     page_title="Agente IA Fiscal",
-    page_icon="🧠",
+    page_icon="🤖",
     layout="centered"
 )
-st.title("Agente IA Fiscal")
+st.title("🤖 Agente IA Fiscal")
 
 
 # --- GESTIÓN DEL CHAT ID Y NUEVA CONVERSACIÓN ---
