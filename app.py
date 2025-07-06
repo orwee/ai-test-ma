@@ -1,74 +1,90 @@
 import streamlit as st
 import requests
 import json
+import uuid  # <--- 1. Importar UUID
 
 # --- CONFIGURACIÓN ---
-# Pega aquí la URL de tu webhook de n8n.
 WEBHOOK_URL = "https://n8n-n8n.sc74op.easypanel.host/webhook-test/90b491f3-14ef-4899-b144-9ba2f1d44a75"
 
-# --- CONFIGURACIÓN DE LA PÁGINA DE STREAMLIT ---
+# --- CONFIGURACIÓN DE LA PÁGINA ---
 st.set_page_config(
-    page_title="Chat con Agente n8n",
-    page_icon="🤖",
+    page_title="Chat con Agente Persistente",
+    page_icon="🧠",
     layout="centered"
 )
-st.title("🤖 Chat con tu Agente de IA")
-st.write("Escribe un mensaje para conversar con el agente conectado a n8n.")
+st.title("🧠 Chat con Memoria Persistente")
+st.write("Cada conversación tiene su propia memoria gracias a un ID de chat único.")
 
-# --- GESTIÓN DEL HISTORIAL DEL CHAT ---
-# Se utiliza el estado de la sesión de Streamlit para no perder los mensajes.
-if "messages" not in st.session_state:
+
+# --- GESTIÓN DEL CHAT ID Y NUEVA CONVERSACIÓN ---
+
+# 2. Inicializar chat_id y mensajes en la sesión
+if "chat_id" not in st.session_state:
+    st.session_state.chat_id = str(uuid.uuid4())
     st.session_state.messages = [
-        {"role": "assistant", "content": "¡Hola! ¿Cómo puedo ayudarte hoy?"}
+        {"role": "assistant", "content": f"Iniciando nueva conversación. ¡Hola! ¿En qué te ayudo?"}
     ]
 
-# Muestra todos los mensajes guardados en el historial
+# 3. Botón para iniciar una nueva conversación en la barra lateral
+with st.sidebar:
+    st.header("Opciones")
+    if st.button("Nueva Conversación"):
+        st.session_state.chat_id = str(uuid.uuid4()) # Genera un nuevo ID
+        st.session_state.messages = [ # Resetea los mensajes
+            {"role": "assistant", "content": f"Iniciando nueva conversación. ¿Listo para empezar?"}
+        ]
+        st.rerun() # Recarga la app para mostrar los cambios
+
+    # Muestra el ID de la conversación actual para depuración
+    st.write("ID de la Conversación Actual:")
+    st.code(st.session_state.chat_id)
+
+
+# --- Muestra el historial de mensajes de la conversación actual ---
 for message in st.session_state.messages:
     with st.chat_message(message["role"]):
         st.markdown(message["content"])
 
-# --- FUNCIÓN PARA COMUNICARSE CON N8N (VERSIÓN FINAL) ---
-def get_agent_response(user_message: str):
+
+# --- FUNCIÓN PARA COMUNICARSE CON N8N ---
+def get_agent_response(user_message: str, chat_id: str):
     """
-    Envía el mensaje del usuario al webhook de n8n y procesa la respuesta.
+    Envía el mensaje y el chat_id a n8n y devuelve la respuesta del agente.
     """
     headers = {"Content-Type": "application/json"}
-    payload = json.dumps({"question": user_message})
+    
+    # 4. Enviar el mensaje Y el chat_id
+    payload = json.dumps({
+        "question": user_message,
+        "chat_id": chat_id  
+    })
 
     try:
-        response = requests.post(WEBHOOK_URL, data=payload, headers=headers, timeout=45)
-
+        response = requests.post(WEBHOOK_URL, data=payload, headers=headers, timeout=60)
         if response.status_code == 200:
             response_data = response.json()
-
-            # --- LÓGICA AJUSTADA AL FORMATO {"output": "texto..."} ---
             if isinstance(response_data, dict):
-                # Extrae el texto directamente de la clave "output".
-                return response_data.get("output", "Error: No se encontró la clave 'output' en la respuesta.")
+                return response_data.get("output", "Error: No se encontró la clave 'output'.")
             else:
-                return f"Error: Se esperaba un objeto JSON, pero se recibió esto: {response_data}"
+                return f"Error: Formato de respuesta inesperado: {response_data}"
         else:
             return f"Error del servidor de n8n: {response.status_code} - {response.text}"
-
-    except requests.exceptions.Timeout:
-        return "Error: La solicitud a n8n ha tardado demasiado en responder."
     except requests.exceptions.RequestException as e:
-        return f"Error de conexión: No se pudo contactar con n8n. ({e})"
+        return f"Error de conexión: {e}"
     except json.JSONDecodeError:
-        return f"Error: No se pudo decodificar la respuesta del servidor. Respuesta recibida:\n\n`{response.text}`"
+        return f"Error al decodificar la respuesta: {response.text}"
+
 
 # --- INTERFAZ DE ENTRADA DEL USUARIO ---
 if prompt := st.chat_input("Escribe tu mensaje aquí..."):
-    # Añade y muestra el mensaje del usuario
     st.session_state.messages.append({"role": "user", "content": prompt})
     with st.chat_message("user"):
         st.markdown(prompt)
 
-    # Obtiene la respuesta del agente y la muestra
     with st.chat_message("assistant"):
         with st.spinner("Pensando..."):
-            response_text = get_agent_response(prompt)
+            # Pasa el chat_id actual a la función
+            response_text = get_agent_response(prompt, st.session_state.chat_id)
             st.markdown(response_text)
     
-    # Añade la respuesta del agente al historial
     st.session_state.messages.append({"role": "assistant", "content": response_text})
