@@ -8,12 +8,11 @@ WEBHOOK_URL = "https://n8n-n8n.sc74op.easypanel.host/webhook-test/90b491f3-14ef-
 
 # --- CONFIGURACIÓN DE LA PÁGINA ---
 st.set_page_config(
-    page_title="Chat con Agente Persistente",
+    page_title="Agente IA Fiscal",
     page_icon="🧠",
     layout="centered"
 )
-st.title("🧠 Chat con Memoria Persistente")
-st.write("Cada conversación tiene su propia memoria gracias a un ID de chat único.")
+st.title("Agente IA Fiscal")
 
 
 # --- GESTIÓN DEL CHAT ID Y NUEVA CONVERSACIÓN ---
@@ -35,9 +34,6 @@ with st.sidebar:
         ]
         st.rerun() # Recarga la app para mostrar los cambios
 
-    # Muestra el ID de la conversación actual para depuración
-    st.write("ID de la Conversación Actual:")
-    st.code(st.session_state.chat_id)
 
 
 # --- Muestra el historial de mensajes de la conversación actual ---
