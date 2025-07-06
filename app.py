@@ -4,7 +4,7 @@ import json
 import uuid  # <--- 1. Importar UUID
 
 # --- CONFIGURACIÓN ---
-WEBHOOK_URL = "https://n8n-n8n.sc74op.easypanel.host/webhook-test/90b491f3-14ef-4899-b144-9ba2f1d44a75"
+WEBHOOK_URL = "https://n8n-n8n.sc74op.easypanel.host/webhook/90b491f3-14ef-4899-b144-9ba2f1d44a75"
 
 # --- CONFIGURACIÓN DE LA PÁGINA ---
 st.set_page_config(
