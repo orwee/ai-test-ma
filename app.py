@@ -98,12 +98,3 @@ if prompt := st.chat_input("Escribe tu mensaje aquí..."):
             st.markdown(response_text)
     
     st.session_state.messages.append({"role": "assistant", "content": response_text})
-```
-
-### Cambios principales:
-
-1.  **Uso de `st.session_state`:** El `st.radio` en la barra lateral ahora guarda la selección en `st.session_state.region`. Esto es fundamental para que la elección del usuario ("España" o "Europa") se recuerde cada vez que la aplicación se actualiza (por ejemplo, al enviar un mensaje).
-2.  **Lógica de selección simplificada:** El código ahora lee directamente de `st.session_state.region` para decidir qué `WEBHOOK_URL` usar.
-3.  **Función como la original:** La función `get_agent_response` ya no necesita que le pases la URL. Simplemente usa la variable `WEBHOOK_URL` que se ha definido globalmente, tal como funcionaba en tu primer código. La llamada a la función es ahora más simple: `get_agent_response(prompt, st.session_state.chat_id)`.
-
-Esta versión debería ser más estable y funcionar como esper�
