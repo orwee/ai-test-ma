@@ -4,8 +4,8 @@ import json
 import uuid
 
 # --- URLs DE LOS WEBHOOKS ---
-WEBHOOK_URL_SPAIN = "https://n8n-n8n.sc74op.easypanel.host/webhook-test/74ef8e07-1206-4c4d-b6b8-d862f7c637ef"
-WEBHOOK_URL_EUROPE = "https://n8n-n8n.sc74op.easypanel.host/webhook-test/86cd01f6-d5fb-4034-bc93-475246f1bfda"
+WEBHOOK_URL_SPAIN = "https://n8n-n8n.sc74op.easypanel.host/webhook/74ef8e07-1206-4c4d-b6b8-d862f7c637ef"
+WEBHOOK_URL_EUROPE = "https://n8n-n8n.sc74op.easypanel.host/webhook/90b491f3-14ef-4899-b144-9ba2f1d44a75"
 
 # --- CONFIGURACIÓN DE LA PÁGINA ---
 st.set_page_config(
