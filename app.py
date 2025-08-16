@@ -7,7 +7,7 @@ import uuid
 # 1. Añadimos la nueva URL para la opción "hash"
 WEBHOOK_URL_SPAIN = "https://n8n-n8n.sc74op.easypanel.host/webhook/74ef8e07-1206-4c4d-b6b8-d862f7c637ef"
 WEBHOOK_URL_EUROPE = "https://n8n-n8n.sc74op.easypanel.host/webhook/86cd01f6-d5fb-4034-bc93-475246f1bfda"
-WEBHOOK_URL_HASH = "https://n8n-n8n.sc74op.easypanel.host/webhook-test/hash" # <-- NUEVA URL
+WEBHOOK_URL_HASH = "https://n8n-n8n.sc74op.easypanel.host/webhook/hash" # <-- NUEVA URL
 
 # --- CONFIGURACIÓN DE LA PÁGINA ---
 st.set_page_config(
